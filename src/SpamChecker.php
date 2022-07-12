@@ -44,10 +44,26 @@ class SpamChecker
 //
 //        $content = $response->getContent();
 //        if (isset($headers['x-akismet-debug-help'][0])) {
-//            throw new \RuntimeException(sprintf('Unable to check for spam: %s (%s).', $content, $headers['x-akismet-debug-help'][0]));
+//           throw new \RuntimeException(sprintf('Unable to check for spam: %s (%s).', $content, $headers['x-akismet-debug-help'][0]));
 //        }
 //
 //        return 'true' === $content ? 1 : 0;
+
+        //This Exception throwns for testing
+        if (isset($context['testing'])) {
+            if (isset($context['spam']) ) {
+                switch ($context['spam']) {
+                    case 'spam':
+                        return 2;
+                    case 'maybe':
+                        return 1;
+                    case 'not':
+                        return 0;
+                }
+            }
+
+            throw new \RuntimeException('Unable to check for spam: invalid (Invalid key).');
+        }
 
         //Spam
         //return 2;
