@@ -68,9 +68,9 @@ class SpamChecker
         //Spam
         //return 2;
         //Might be spam
-        return 1;
+        //return 1;
         //Not Spam
-        //return 0;
+        return 0;
     }
 
 }

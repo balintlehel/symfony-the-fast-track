@@ -17,151 +17,11 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: notify_messenger_messages(); Type: FUNCTION; Schema: public; Owner: symfony
+-- Data for Name: admin; Type: TABLE DATA; Schema: public; Owner: symfony
 --
 
-CREATE FUNCTION public.notify_messenger_messages() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-            BEGIN
-                PERFORM pg_notify('messenger_messages', NEW.queue_name::text);
-                RETURN NEW;
-            END;
-        $$;
-
-
-ALTER FUNCTION public.notify_messenger_messages() OWNER TO symfony;
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
-
---
--- Name: comment; Type: TABLE; Schema: public; Owner: symfony
---
-
-CREATE TABLE public.comment (
-    id integer NOT NULL,
-    conference_id integer NOT NULL,
-    author character varying(255) NOT NULL,
-    text text NOT NULL,
-    email character varying(255) NOT NULL,
-    created_at timestamp(0) without time zone NOT NULL,
-    photo_filename character varying(255) DEFAULT NULL::character varying
-);
-
-
-ALTER TABLE public.comment OWNER TO symfony;
-
---
--- Name: COLUMN comment.created_at; Type: COMMENT; Schema: public; Owner: symfony
---
-
-COMMENT ON COLUMN public.comment.created_at IS '(DC2Type:datetime_immutable)';
-
-
---
--- Name: comment_id_seq; Type: SEQUENCE; Schema: public; Owner: symfony
---
-
-CREATE SEQUENCE public.comment_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.comment_id_seq OWNER TO symfony;
-
---
--- Name: conference; Type: TABLE; Schema: public; Owner: symfony
---
-
-CREATE TABLE public.conference (
-    id integer NOT NULL
-);
-
-
-ALTER TABLE public.conference OWNER TO symfony;
-
---
--- Name: conference_id_seq; Type: SEQUENCE; Schema: public; Owner: symfony
---
-
-CREATE SEQUENCE public.conference_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.conference_id_seq OWNER TO symfony;
-
---
--- Name: doctrine_migration_versions; Type: TABLE; Schema: public; Owner: symfony
---
-
-CREATE TABLE public.doctrine_migration_versions (
-    version character varying(191) NOT NULL,
-    executed_at timestamp(0) without time zone DEFAULT NULL::timestamp without time zone,
-    execution_time integer
-);
-
-
-ALTER TABLE public.doctrine_migration_versions OWNER TO symfony;
-
---
--- Name: messenger_messages; Type: TABLE; Schema: public; Owner: symfony
---
-
-CREATE TABLE public.messenger_messages (
-    id bigint NOT NULL,
-    body text NOT NULL,
-    headers text NOT NULL,
-    queue_name character varying(190) NOT NULL,
-    created_at timestamp(0) without time zone NOT NULL,
-    available_at timestamp(0) without time zone NOT NULL,
-    delivered_at timestamp(0) without time zone DEFAULT NULL::timestamp without time zone
-);
-
-
-ALTER TABLE public.messenger_messages OWNER TO symfony;
-
---
--- Name: messenger_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: symfony
---
-
-CREATE SEQUENCE public.messenger_messages_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.messenger_messages_id_seq OWNER TO symfony;
-
---
--- Name: messenger_messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: symfony
---
-
-ALTER SEQUENCE public.messenger_messages_id_seq OWNED BY public.messenger_messages.id;
-
-
---
--- Name: messenger_messages id; Type: DEFAULT; Schema: public; Owner: symfony
---
-
-ALTER TABLE ONLY public.messenger_messages ALTER COLUMN id SET DEFAULT nextval('public.messenger_messages_id_seq'::regclass);
-
-
---
--- Data for Name: comment; Type: TABLE DATA; Schema: public; Owner: symfony
---
-
-COPY public.comment (id, conference_id, author, text, email, created_at, photo_filename) FROM stdin;
+COPY public.admin (id, username, roles, password) FROM stdin;
+1	admin	["ROLE_ADMIN"]	$2y$13$uDiygqpSdFGIXKWDNuF59eTxVH6ORG317ldl6RM2wo8zqkzu6CZTe
 \.
 
 
@@ -169,9 +29,22 @@ COPY public.comment (id, conference_id, author, text, email, created_at, photo_f
 -- Data for Name: conference; Type: TABLE DATA; Schema: public; Owner: symfony
 --
 
-COPY public.conference (id) FROM stdin;
-1
-2
+COPY public.conference (id, city, year, is_international, slug) FROM stdin;
+111111	Asdváros	2022	t	asd-conf
+2222222	Cityovics 	2021	f	city-conf
+333333	Bélafalce	2022	f	belafalva-conf
+2	Oklahoma	2120	t	okla-homa
+\.
+
+
+--
+-- Data for Name: comment; Type: TABLE DATA; Schema: public; Owner: symfony
+--
+
+COPY public.comment (id, conference_id, author, text, email, created_at, photo_filename, state) FROM stdin;
+2	2222222	ASDASDASD	SDFAsdgafdhkfhjfgh	sdfsfsd{@sdfsdfsd.fd	2022-08-04 16:54:07	\N	submitted
+3	2222222	asdadasd	sdfasfsdagsag	asdads@asdsds.sd	2022-08-04 16:54:27	\N	published
+1	2222222	asdasdasd	asdASDGSAFSDF	SADFADSA@ASDASD.SD	2022-08-04 16:53:56	a7cb8a33a6b7.png	published
 \.
 
 
@@ -180,7 +53,14 @@ COPY public.conference (id) FROM stdin;
 --
 
 COPY public.doctrine_migration_versions (version, executed_at, execution_time) FROM stdin;
-DoctrineMigrations\\Version20220707085501	2022-07-07 11:00:30	67
+DoctrineMigrations\\Version20220707085501	2022-08-04 16:36:04	63
+DoctrineMigrations\\Version20220707103101	2022-08-04 16:36:04	2
+DoctrineMigrations\\Version20220711093019	2022-08-04 16:36:04	10
+DoctrineMigrations\\Version20220711114523	2022-08-04 16:36:04	6
+DoctrineMigrations\\Version20220711120208	2022-08-04 16:36:04	4
+DoctrineMigrations\\Version20220711141311	2022-08-04 16:36:04	13
+DoctrineMigrations\\Version20220712095643	2022-08-04 16:36:04	1
+DoctrineMigrations\\Version20220712130012	2022-08-04 16:36:04	0
 \.
 
 
@@ -189,14 +69,33 @@ DoctrineMigrations\\Version20220707085501	2022-07-07 11:00:30	67
 --
 
 COPY public.messenger_messages (id, body, headers, queue_name, created_at, available_at, delivered_at) FROM stdin;
+1	O:36:\\"Symfony\\\\Component\\\\Messenger\\\\Envelope\\":2:{s:44:\\"\\0Symfony\\\\Component\\\\Messenger\\\\Envelope\\0stamps\\";a:1:{s:46:\\"Symfony\\\\Component\\\\Messenger\\\\Stamp\\\\BusNameStamp\\";a:1:{i:0;O:46:\\"Symfony\\\\Component\\\\Messenger\\\\Stamp\\\\BusNameStamp\\":1:{s:55:\\"\\0Symfony\\\\Component\\\\Messenger\\\\Stamp\\\\BusNameStamp\\0busName\\";s:21:\\"messenger.bus.default\\";}}}s:45:\\"\\0Symfony\\\\Component\\\\Messenger\\\\Envelope\\0message\\";O:26:\\"App\\\\Message\\\\CommentMessage\\":2:{s:30:\\"\\0App\\\\Message\\\\CommentMessage\\0id\\";i:1;s:35:\\"\\0App\\\\Message\\\\CommentMessage\\0context\\";a:4:{s:7:\\"user_ip\\";s:9:\\"127.0.0.1\\";s:10:\\"user_agent\\";s:111:\\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36\\";s:8:\\"referrer\\";s:42:\\"http://localhost:8000/conference/city-conf\\";s:9:\\"permalink\\";s:42:\\"http://localhost:8000/conference/city-conf\\";}}}	[]	default	2022-08-04 16:53:56	2022-08-04 16:53:56	\N
+2	O:36:\\"Symfony\\\\Component\\\\Messenger\\\\Envelope\\":2:{s:44:\\"\\0Symfony\\\\Component\\\\Messenger\\\\Envelope\\0stamps\\";a:1:{s:46:\\"Symfony\\\\Component\\\\Messenger\\\\Stamp\\\\BusNameStamp\\";a:1:{i:0;O:46:\\"Symfony\\\\Component\\\\Messenger\\\\Stamp\\\\BusNameStamp\\":1:{s:55:\\"\\0Symfony\\\\Component\\\\Messenger\\\\Stamp\\\\BusNameStamp\\0busName\\";s:21:\\"messenger.bus.default\\";}}}s:45:\\"\\0Symfony\\\\Component\\\\Messenger\\\\Envelope\\0message\\";O:26:\\"App\\\\Message\\\\CommentMessage\\":2:{s:30:\\"\\0App\\\\Message\\\\CommentMessage\\0id\\";i:2;s:35:\\"\\0App\\\\Message\\\\CommentMessage\\0context\\";a:4:{s:7:\\"user_ip\\";s:9:\\"127.0.0.1\\";s:10:\\"user_agent\\";s:111:\\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36\\";s:8:\\"referrer\\";s:42:\\"http://localhost:8000/conference/city-conf\\";s:9:\\"permalink\\";s:42:\\"http://localhost:8000/conference/city-conf\\";}}}	[]	default	2022-08-04 16:54:07	2022-08-04 16:54:07	\N
+3	O:36:\\"Symfony\\\\Component\\\\Messenger\\\\Envelope\\":2:{s:44:\\"\\0Symfony\\\\Component\\\\Messenger\\\\Envelope\\0stamps\\";a:1:{s:46:\\"Symfony\\\\Component\\\\Messenger\\\\Stamp\\\\BusNameStamp\\";a:1:{i:0;O:46:\\"Symfony\\\\Component\\\\Messenger\\\\Stamp\\\\BusNameStamp\\":1:{s:55:\\"\\0Symfony\\\\Component\\\\Messenger\\\\Stamp\\\\BusNameStamp\\0busName\\";s:21:\\"messenger.bus.default\\";}}}s:45:\\"\\0Symfony\\\\Component\\\\Messenger\\\\Envelope\\0message\\";O:26:\\"App\\\\Message\\\\CommentMessage\\":2:{s:30:\\"\\0App\\\\Message\\\\CommentMessage\\0id\\";i:3;s:35:\\"\\0App\\\\Message\\\\CommentMessage\\0context\\";a:4:{s:7:\\"user_ip\\";s:9:\\"127.0.0.1\\";s:10:\\"user_agent\\";s:111:\\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36\\";s:8:\\"referrer\\";s:42:\\"http://localhost:8000/conference/city-conf\\";s:9:\\"permalink\\";s:42:\\"http://localhost:8000/conference/city-conf\\";}}}	[]	default	2022-08-04 16:54:27	2022-08-04 16:54:27	\N
 \.
+
+
+--
+-- Data for Name: sessions; Type: TABLE DATA; Schema: public; Owner: symfony
+--
+
+COPY public.sessions (sess_id, sess_data, sess_lifetime, sess_time) FROM stdin;
+lfkshv74s9o57re4ms27o311mj	\\x5f7366325f617474726962757465737c613a31303a7b733a32363a225f73656375726974792e6d61696e2e7461726765745f70617468223b733a32373a22687474703a2f2f6c6f63616c686f73743a383030302f61646d696e223b733a31383a225f637372662f61757468656e746963617465223b733a34333a22713770684b76762d49436a70373279505453574c2d64394c433635327543596171697672496537705f4c51223b733a32333a225f73656375726974792e6c6173745f757365726e616d65223b733a353a2261646d696e223b733a31343a225f73656375726974795f6d61696e223b733a3435393a224f3a37353a2253796d666f6e795c436f6d706f6e656e745c53656375726974795c487474705c41757468656e74696361746f725c546f6b656e5c506f737441757468656e7469636174696f6e546f6b656e223a323a7b693a303b733a343a226d61696e223b693a313b613a353a7b693a303b4f3a31363a224170705c456e746974795c41646d696e223a343a7b733a32303a22004170705c456e746974795c41646d696e006964223b693a313b733a32363a22004170705c456e746974795c41646d696e00757365726e616d65223b733a353a2261646d696e223b733a32333a22004170705c456e746974795c41646d696e00726f6c6573223b613a313a7b693a303b733a31303a22524f4c455f41444d494e223b7d733a32363a22004170705c456e746974795c41646d696e0070617373776f7264223b733a36303a2224327924313324754469796771705364464749584b57444e754635396554785648364f52473331376c646c36524d32776f387a716b7a7536435a5465223b7d693a313b623a313b693a323b4e3b693a333b613a303a7b7d693a343b613a323a7b693a303b733a31303a22524f4c455f41444d494e223b693a313b733a393a22524f4c455f55534552223b7d7d7d223b733a33333a225f637372662f65612d62617463682d616374696f6e2d626174636844656c657465223b733a34333a22666f7367517148504366773259652d2d776b75507564493344786459596563644d4c755f4252594331646b223b733a31353a225f637372662f65612d64656c657465223b733a34333a2274514e45654355554a66696e456a58676c4741386973454351736470584f77533564773034457758757777223b733a31353a225f637372662f65612d746f67676c65223b733a34333a224f4648666d7a77784c7a77394448474d6867444b7a474974715f49454f427056347176764d47754574336b223b733a31363a225f637372662f436f6e666572656e6365223b733a34333a226a53394735464732426d7975676a534133454631447165376e4c555074794a3664684854414e4e6c666334223b733a31383a225f637372662f636f6d6d656e745f666f726d223b733a34333a226e486357726766466c56673976536363684375316c7435426a424b6f4271584a745f5233386977506b6238223b733a31333a225f637372662f436f6d6d656e74223b733a34333a226a594e57524d37737749315a496c356c735475667150715572573375426c696c6a5f6a545f34707551344d223b7d5f7366325f6d6574617c613a333a7b733a313a2275223b693a313635393632343937393b733a313a2263223b693a313635393632343337343b733a313a226c223b693a303b7d	1659626420	1659624980
+\.
+
+
+--
+-- Name: admin_id_seq; Type: SEQUENCE SET; Schema: public; Owner: symfony
+--
+
+SELECT pg_catalog.setval('public.admin_id_seq', 1, true);
 
 
 --
 -- Name: comment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: symfony
 --
 
-SELECT pg_catalog.setval('public.comment_id_seq', 1, false);
+SELECT pg_catalog.setval('public.comment_id_seq', 3, true);
 
 
 --
@@ -210,82 +109,7 @@ SELECT pg_catalog.setval('public.conference_id_seq', 2, true);
 -- Name: messenger_messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: symfony
 --
 
-SELECT pg_catalog.setval('public.messenger_messages_id_seq', 1, false);
-
-
---
--- Name: comment comment_pkey; Type: CONSTRAINT; Schema: public; Owner: symfony
---
-
-ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT comment_pkey PRIMARY KEY (id);
-
-
---
--- Name: conference conference_pkey; Type: CONSTRAINT; Schema: public; Owner: symfony
---
-
-ALTER TABLE ONLY public.conference
-    ADD CONSTRAINT conference_pkey PRIMARY KEY (id);
-
-
---
--- Name: doctrine_migration_versions doctrine_migration_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: symfony
---
-
-ALTER TABLE ONLY public.doctrine_migration_versions
-    ADD CONSTRAINT doctrine_migration_versions_pkey PRIMARY KEY (version);
-
-
---
--- Name: messenger_messages messenger_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: symfony
---
-
-ALTER TABLE ONLY public.messenger_messages
-    ADD CONSTRAINT messenger_messages_pkey PRIMARY KEY (id);
-
-
---
--- Name: idx_75ea56e016ba31db; Type: INDEX; Schema: public; Owner: symfony
---
-
-CREATE INDEX idx_75ea56e016ba31db ON public.messenger_messages USING btree (delivered_at);
-
-
---
--- Name: idx_75ea56e0e3bd61ce; Type: INDEX; Schema: public; Owner: symfony
---
-
-CREATE INDEX idx_75ea56e0e3bd61ce ON public.messenger_messages USING btree (available_at);
-
-
---
--- Name: idx_75ea56e0fb7336f0; Type: INDEX; Schema: public; Owner: symfony
---
-
-CREATE INDEX idx_75ea56e0fb7336f0 ON public.messenger_messages USING btree (queue_name);
-
-
---
--- Name: idx_9474526c604b8382; Type: INDEX; Schema: public; Owner: symfony
---
-
-CREATE INDEX idx_9474526c604b8382 ON public.comment USING btree (conference_id);
-
-
---
--- Name: messenger_messages notify_trigger; Type: TRIGGER; Schema: public; Owner: symfony
---
-
-CREATE TRIGGER notify_trigger AFTER INSERT OR UPDATE ON public.messenger_messages FOR EACH ROW EXECUTE FUNCTION public.notify_messenger_messages();
-
-
---
--- Name: comment fk_9474526c604b8382; Type: FK CONSTRAINT; Schema: public; Owner: symfony
---
-
-ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT fk_9474526c604b8382 FOREIGN KEY (conference_id) REFERENCES public.conference(id);
+SELECT pg_catalog.setval('public.messenger_messages_id_seq', 3, true);
 
 
 --
